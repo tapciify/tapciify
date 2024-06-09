@@ -42,6 +42,7 @@ use rayon::prelude::*;
 
 use crate::background_string::BackgroundStringArtConverter;
 use crate::braille::BrailleArtConverter;
+use crate::dithering_braille::DitheringBrailleConverter;
 use crate::{
     AsciiArt, AsciiArtConverter, AsciiArtConverterError, AsciiArtConverterOptions,
     AsciiStringError, CustomRatioResize, SizeError, DEFAULT_ASCII_STRING, DEFAULT_FONT_RATIO,
@@ -67,10 +68,7 @@ pub fn calculate_frame_time(framerate: Option<f64>) -> u64 {
 pub struct AsciiPlayer {}
 
 impl AsciiPlayer {
-    #[deprecated(
-        since = "3.1.0",
-        note = "Use `Iterator::rev` instead"
-    )]
+    #[deprecated(since = "3.1.0", note = "Use `Iterator::rev` instead")]
     /// Reverse ASCII string
     pub fn reverse_ascii_string(ascii_string: String) -> String {
         ascii_string.chars().rev().collect()
@@ -97,12 +95,17 @@ impl AsciiPlayer {
             options.filter,
         );
 
-        let ascii_art = match (options.clone().background_string, options.braille) {
-            (Some(background_string), _) => {
+        let ascii_art = match (
+            options.clone().background_string,
+            options.dithering_braille,
+            options.braille,
+        ) {
+            (Some(background_string), _, _) => {
                 prepared_img.background_string_art(&background_string, options.colored)?
             }
-            (None, true) => prepared_img.braille_art(options.colored)?,
-            (None, false) => prepared_img.ascii_art(converter_options)?,
+            (None, true, _) => prepared_img.dithering_braille_art(options.colored)?,
+            (None, false, true) => prepared_img.braille_art(options.colored)?,
+            (None, false, false) => prepared_img.ascii_art(converter_options)?,
         };
 
         Ok(ascii_art)
@@ -255,6 +258,7 @@ pub struct AsciiPlayerOptions {
     pub braille: bool,
     /// Text to show as background on light pixels
     pub background_string: Option<String>,
+    pub dithering_braille: bool,
 }
 
 impl Default for AsciiPlayerOptions {
@@ -271,6 +275,7 @@ impl Default for AsciiPlayerOptions {
             filter: FilterType::Triangle,
             threshold: None,
             braille: false,
+            dithering_braille: false,
             background_string: None,
         }
     }

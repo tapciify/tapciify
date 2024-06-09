@@ -43,6 +43,7 @@ fn main() {
         threshold: cli.threshold,
         braille: cli.braille,
         background_string: cli.background_string,
+        dithering_braille: cli.dithering_braille,
         ..Default::default()
     };
 

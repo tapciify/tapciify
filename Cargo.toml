@@ -41,10 +41,12 @@ default = ["full"]
 full = ["rayon", "player"]
 
 braille = ["threshold-utils"]
+dithering-braille = ["braille"]
 background-string = ["threshold-utils"]
 threshold-utils = []
 player = [
     "braille",
+    "dithering-braille",
     "background-string",
     "dep:clap",
     "dep:crossterm",

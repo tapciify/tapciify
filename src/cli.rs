@@ -57,6 +57,9 @@ pub struct Cli {
     /// Use braille pattern for rendering images
     #[clap(short, long, action)]
     pub braille: bool,
+    /// Use dithering with braille for rendering images
+    #[clap(short, long, action)]
+    pub dithering_braille: bool,
     /// Use text for background on light pixels
     #[clap(long)]
     pub background_string: Option<String>,

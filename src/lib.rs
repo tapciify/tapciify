@@ -112,6 +112,9 @@ pub mod player;
 #[cfg(feature = "braille")]
 pub mod braille;
 
+#[cfg(feature = "dithering-braille")]
+pub mod dithering_braille;
+
 #[cfg(feature = "background-string")]
 pub mod background_string;
 
